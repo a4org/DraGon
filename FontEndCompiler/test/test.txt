@@ -1,0 +1,13 @@
+{
+    int i; int j; float v; float x; float[100] a;
+    j = 100;
+    v = 0.78;
+    while( true ) {
+        i = i + 1;
+        j = j + v;
+        if( i >= j ) break;
+    }
+
+    do {i = i - 1;} while ( a[i] < v );
+
+}
