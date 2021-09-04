@@ -3,7 +3,7 @@ import java.util.*;
 import lexer.*;
 import inter.*;
 public class Env {
-    private Hashtable table;
+    private Hashtable table; // this table contains all symbols in current block
     protected Env prev;
     public Env(Env n) { table = new Hashtable(); prev = n; }
     public void put(Token w, Id i) { table.put(w, i); }

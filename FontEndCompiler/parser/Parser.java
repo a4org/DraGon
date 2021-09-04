@@ -7,7 +7,7 @@ import inter.*;
 public class Parser {
     private Lexer lex;  // lexical analyzer of this parser
     private Token look; // lookahead token
-    Env top = null;
+    Env top = null; // env
     int used = 0;
 
     public Parser(Lexer l) throws IOException {
@@ -23,48 +23,51 @@ public class Parser {
         else error("syntax error");
     }
 
-    
-
     // Start 
     public void program() throws IOException {  // program -> block
         Stmt s = block();
         int begin = s.newlabel();
         int after = s.newlabel();
-        s.emitlabel(begin);
-        s.gen(begin, after);
+        s.emitlabel(begin);  // L1:
+        s.gen(begin, after); // 
         s.emitlabel(after);
     }
 
     Stmt block() throws IOException {          // block -> { decls stmts }
         match('{');
-        Env savedEnv = top;
-        top = new Env(top);
+        Env savedEnv = top; 
+        top = new Env(top); // create a Env
 
-        decls();
-        Stmt s = stmts();
+	// decls just for put id into env table will not emit
+        decls(); // there must have a sequence between decls and stmts 
+
+        Stmt s = stmts(); // Seq
+
         match('}');
         top = savedEnv;                        // cannot be accessed outside the block
 
         return s;
     }
 
+    // int i; float[100] j; 
     void decls() throws IOException {          // declaration emit nothing
         while ( look.tag == Tag.BASIC ) {      // which means this lex is a type ( see Type.java )
-            Type p = type();
-            Token tok = look;
-            match(Tag.ID);
+            Type p = type(); 
+            Token tok = look; // int / float
+            match(Tag.ID);  // a 
             match(';');
 
             Id id = new Id((Word)tok, p, used);
-            top.put( tok, id );
+            top.put( tok, id );   //  actually decl() will will not print anything
+	    // it just put the id (with its type) into the top Env
             used = used + p.width;
         }
     }
 
     Type type() throws IOException {
         Type p = (Type)look;
-        match(Tag.BASIC);
-        if( look.tag != '[' ) return p;
+        match(Tag.BASIC); // if not a type, print error
+        if( look.tag != '[' ) return p; // check whether it is a array
         else return dims(p);                   // return array type
     }
 
@@ -81,11 +84,13 @@ public class Parser {
         return new Array(((Num)tok).value, p); // Array is a child class of Type
     } // End of Declaration
 
+
     Stmt stmts() throws IOException {
         if ( look.tag == '}' ) return Stmt.Null;
         else return new Seq(stmt(), stmts());  // seq is used for interation
     }
 
+    // Predictive Parsing
     Stmt stmt() throws IOException {
         Expr x; Stmt s, s1, s2;
         Stmt savedStmt;
@@ -107,7 +112,6 @@ public class Parser {
                 While whilenode = new While();
                 savedStmt = Stmt.Enclosing;
                 Stmt.Enclosing = whilenode;
-
                 match(Tag.WHILE); match('('); x = bool(); match(')');
                 s1 = stmt();
                 whilenode.init(x, s1);
@@ -196,7 +200,7 @@ public class Parser {
         while( look.tag == '-' || look.tag == '+' ) {
             Token tok = look;
             move();
-            x = new Arith(tok, x, term());
+            x = new Arith(tok, x, term()); // key to understand
         }
         return x;
     }
@@ -219,6 +223,7 @@ public class Parser {
         else return factor();
     }
 
+    // jump here to understand (precedence of operators)
     Expr factor() throws IOException {
         Expr x = null;
         switch( look.tag ) {
@@ -246,7 +251,6 @@ public class Parser {
                 return x;
 
             case Tag.ID:
-                String s = look.toString();
                 Id id = top.get(look);
                 if( id == null ) error(look.toString() + " undeclared");
                 move();

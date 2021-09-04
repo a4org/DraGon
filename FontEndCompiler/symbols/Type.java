@@ -1,10 +1,12 @@
 package symbols;
 import lexer.*;
 public class Type extends Word {
+    // Comparing to Word, just with a "width" attr for storiage
     public int width = 0; // used for storiage
 
     public Type(String s, int tag, int w) { super(s, tag); width = w; }
     public static final Type
+	// BASIC means this Word is a type
         Int   = new Type("int",   Tag.BASIC, 4),
         Float = new Type("float", Tag.BASIC, 8),
         Char  = new Type("char",  Tag.BASIC, 1),
