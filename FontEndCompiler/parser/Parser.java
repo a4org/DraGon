@@ -28,7 +28,9 @@ public class Parser {
         Stmt s = block();
         int begin = s.newlabel();
         int after = s.newlabel();
+
         s.emitlabel(begin);  // L1:
+
         s.gen(begin, after); // 
         s.emitlabel(after);
     }
@@ -46,7 +48,7 @@ public class Parser {
         match('}');
         top = savedEnv;                        // cannot be accessed outside the block
 
-        return s;
+        return s; // Seq
     }
 
     // int i; float[100] j; 
@@ -88,6 +90,7 @@ public class Parser {
     Stmt stmts() throws IOException {
         if ( look.tag == '}' ) return Stmt.Null;
         else return new Seq(stmt(), stmts());  // seq is used for interation
+	// Seq(stmt(), Seq(stmt(), Seq(stmt(), Seq...)))
     }
 
     // Predictive Parsing
@@ -101,7 +104,7 @@ public class Parser {
                 return Stmt.Null;
             case Tag.IF:
                 match(Tag.IF); match('('); x = bool(); match(')');
-                s1 = stmt();
+                s1 = stmt(); // block
                 if( look.tag != Tag.ELSE ) {
                     return new If(x, s1);
                 }
@@ -134,6 +137,7 @@ public class Parser {
             case '{':
                 return block();
             default:
+                // assign a value 
                 return assign();
         }
     }
@@ -204,6 +208,11 @@ public class Parser {
         }
         return x;
     }
+
+    // Key: (ignore unary)
+    // expr -> expr + term // expr - term // term
+    // term -> factor * factor // factor / factor // factor
+    // factor -> NUM // REAL // TRUE // FALSE // ID // ERROR
 
     Expr term() throws IOException {
         Expr x = unary();

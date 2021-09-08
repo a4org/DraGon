@@ -5,6 +5,7 @@ public class Set extends Stmt {
     public Id id;
     public Expr expr;
     public Set(Id i, Expr x) {
+	// Expr -> bool() usually a Arith()
         id = i; expr = x;
         if( check(id.type, expr.type) == null ) error("type error");
     }
@@ -17,5 +18,6 @@ public class Set extends Stmt {
 
     public void gen(int b, int a) {
         emit( id.toString() + " = " + expr.gen().toString() );
+	// gen code
     }
 }

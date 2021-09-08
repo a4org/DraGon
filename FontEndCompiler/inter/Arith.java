@@ -11,9 +11,10 @@ public class Arith extends Op {
         if (type == null) error("type error");
     }
     public Expr gen() {
-        return new Arith(op, expr1.reduce(), expr2.reduce());
+        return new Arith(op, expr1.reduce(), expr2.reduce()); // reduce() check Op.java
     }
     public String toString() {
+	// iteration
         return expr1.toString() + " " + op.toString() + " " + expr2.toString();
     }
 }

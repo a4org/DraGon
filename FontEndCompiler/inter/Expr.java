@@ -10,7 +10,7 @@ public class Expr extends Node {
     public Expr gen() { return this; }
     public Expr reduce() { return this; }
 
-    public void jumping(int t, int f) { emitjumps(toString(), t, f); }
+    public void jumping(int t, int f) { emitjumps(toString(), t, f); } // Rel(tok, x, expr)
     public void emitjumps(String test, int t, int f) {
         if( t != 0 && f!= 0 ) {
             emit("if " + test + " goto L" + t);
@@ -22,6 +22,6 @@ public class Expr extends Node {
     }
 
     public String toString() {
-        return op.toString();
+        return op.toString(); // Constant -> token.toString()
     }
 }
