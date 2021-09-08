@@ -147,7 +147,7 @@ L2:
 ```
 
 * **Parser: `stmt()` -> `Else(bool(), stmt(), stmt())`**
-* **Code Generator: Emit two new lables (other just similar to if and while)
+* **Code Generator: Emit two new lables (other just similar to if and while)**
 
 ```
 ❯ java main.Main < test/Else.txt
