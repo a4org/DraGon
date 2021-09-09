@@ -8,8 +8,8 @@
 
 }
 ```
-* ** Parser:  `stmt()` -> `assign()` ->`Set(id, bool())` -> `Arith()` (return Set)**<br>
-* ** Code Generator: `Set(id, bool()).gen().toString()` -> `Arith(op, expr1.reduce(), expr2.reduce())`**
+* **Parser:  `stmt()` -> `assign()` ->`Set(id, bool())` -> `Arith()` (return Set)**
+* **Code Generator: `Set(id, bool()).gen().toString()` -> `Arith(op, expr1.reduce(), expr2.reduce())`**
 
 ### Code Graph
 **`x = a * b + c - a * y`**<br>
